@@ -1,0 +1,70 @@
+version: '3.7'
+
+services:
+  harbor-db:
+    image: goharbor/harbor-db:${HARBOR_VERSION}
+    container_name: harbor-db
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=registry
+      - POSTGRES_USER=postgres
+    volumes:
+      - ./data/database:/var/lib/postgresql/data
+
+  harbor-redis:
+    image: goharbor/redis-photon:${HARBOR_VERSION}
+    container_name: harbor-redis
+    restart: always
+    volumes:
+      - ./data/redis:/data
+
+  harbor-portal:
+    image: goharbor/harbor-portal:${HARBOR_VERSION}
+    container_name: harbor-portal
+    restart: always
+    environment:
+      - PORTAL_URL=${PORTAL_URL}
+      - EXTERNAL_URL=${EXTERNAL_URL}
+    depends_on:
+      - harbor-core
+
+  harbor-core:
+    image: goharbor/harbor-core:${HARBOR_VERSION}
+    container_name: harbor-core
+    restart: always
+    environment:
+      - PORTAL_URL=${PORTAL_URL}
+      - EXTERNAL_URL=${EXTERNAL_URL}
+      - DATABASE_TYPE=postgresql
+      - DATABASE_HOST=harbor-db
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=registry
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - REDIS_URL=${REDIS_URL}
+      - HARBOR_ADMIN_PASSWORD=${HARBOR_ADMIN_PASSWORD}
+      - CORE_SECRET=${CORE_SECRET}
+    depends_on:
+      - harbor-db
+      - harbor-redis
+      - harbor-portal
+
+  registry:
+    image: goharbor/registry-photon:${HARBOR_VERSION}
+    container_name: registry
+    restart: always
+    depends_on:
+      - harbor-core
+    volumes:
+      - ./data/registry:/storage
+
+  harbor-jobservice:
+    image: goharbor/harbor-jobservice:${HARBOR_VERSION}
+    container_name: harbor-jobservice
+    restart: always
+    environment:
+      - PORTAL_URL=${PORTAL_URL}
+      - EXTERNAL_URL=${EXTERNAL_URL}
+    depends_on:
+      - harbor-core
