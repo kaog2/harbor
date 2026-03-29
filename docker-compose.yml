@@ -1,5 +1,3 @@
-version: '3.7'
-
 services:
   harbor-db:
     image: goharbor/harbor-db:${HARBOR_VERSION}
