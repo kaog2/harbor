@@ -1,6 +1,7 @@
 services:
   harbor-db:
     image: goharbor/harbor-db:${HARBOR_VERSION}
+    pull_policy: always
     container_name: harbor-db
     restart: always
     environment:
@@ -12,6 +13,7 @@ services:
 
   harbor-redis:
     image: goharbor/redis-photon:${HARBOR_VERSION}
+    pull_policy: always
     container_name: harbor-redis
     restart: always
     volumes:
@@ -19,16 +21,18 @@ services:
 
   harbor-portal:
     image: goharbor/harbor-portal:${HARBOR_VERSION}
+    pull_policy: always
     container_name: harbor-portal
     restart: always
     environment:
       - PORTAL_URL=${PORTAL_URL}
       - EXTERNAL_URL=${EXTERNAL_URL}
-    #depends_on:
-    #  - harbor-core
+    # depends_on:
+    #   - harbor-core
 
   harbor-core:
     image: goharbor/harbor-core:${HARBOR_VERSION}
+    pull_policy: always
     container_name: harbor-core
     restart: always
     environment:
@@ -50,6 +54,7 @@ services:
 
   registry:
     image: goharbor/registry-photon:${HARBOR_VERSION}
+    pull_policy: always
     container_name: registry
     restart: always
     depends_on:
@@ -59,6 +64,7 @@ services:
 
   harbor-jobservice:
     image: goharbor/harbor-jobservice:${HARBOR_VERSION}
+    pull_policy: always
     container_name: harbor-jobservice
     restart: always
     environment:
