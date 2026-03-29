@@ -24,8 +24,8 @@ services:
     environment:
       - PORTAL_URL=${PORTAL_URL}
       - EXTERNAL_URL=${EXTERNAL_URL}
-    depends_on:
-      - harbor-core
+    #depends_on:
+    #  - harbor-core
 
   harbor-core:
     image: goharbor/harbor-core:${HARBOR_VERSION}
