@@ -72,3 +72,7 @@ services:
       - EXTERNAL_URL=${EXTERNAL_URL}
     depends_on:
       - harbor-core
+
+networks:
+  nginx_proxi_default:
+    external: true
